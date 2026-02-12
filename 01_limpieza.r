@@ -64,6 +64,7 @@ df <- df %>%
 #INCONSISTENCIAS
 #---------------
 
+#1
 #Estudiante ID 5316 se encuentra incoherencia entre edad y rango
 
 incon_1 <- df  %>%
@@ -81,10 +82,69 @@ df <- df %>%
 rect_1 <- df %>%
   filter(documento_identidad==5316)
 
+#2
+#El problema de 'edad' y 'rango_de_edad' ocurre varias veces
+#procedemos a verificar concordancia
 
+incon_2 <- df %>%
+  mutate(
+    rango_de_edad = str_to_upper(rango_de_edad),
+    concordancia = case_when(
+      rango_de_edad == "ENTRE 16 Y 18 AÑOS" & edad >= 16 & edad <= 18 ~ TRUE,
+      rango_de_edad == "ENTRE 19 Y 21 AÑOS" & edad >= 19 & edad <= 21 ~ TRUE,
+      rango_de_edad == "ENTRE 22 Y 24 AÑOS" & edad >= 22 & edad <= 24 ~ TRUE,
+      rango_de_edad == "ENTRE 25 Y 27 AÑOS" & edad >= 25 & edad <= 27 ~ TRUE,
+      rango_de_edad == "ENTRE 28 Y 30 AÑOS" & edad >= 28 & edad <= 30 ~ TRUE,
+      rango_de_edad == "ENTRE 31 Y 33 AÑOS" & edad >= 31 & edad <= 33 ~ TRUE,
+      rango_de_edad == "ENTRE 34 Y 36 AÑOS" & edad >= 34 & edad <= 36 ~ TRUE,
+      rango_de_edad == "ENTRE 37 Y 39 AÑOS" & edad >= 37 & edad <= 39 ~ TRUE,
+      rango_de_edad == "ENTRE 40 Y 42 AÑOS" & edad >= 40 & edad <= 42 ~ TRUE,
+      rango_de_edad == "MAYOR DE 42 AÑOS" & edad > 42 ~ TRUE,
+      TRUE ~ FALSE
+    )
+  )
 
+df_errores <- incon_2 %>%
+  filter(concordancia == FALSE) %>%
+  select(documento_identidad, edad, rango_de_edad)
 
+print(df_errores)
 
+#Decidimos eliminar las filas que no concuerdan
+
+df <- incon_2 %>%
+  filter(concordancia == TRUE) %>%
+  select(-concordancia)  # opcional quitar la columna auxiliar
+
+#3
+#En 'estado_civil' cambiamos '0' por 'SOLTERO(A)'
+
+df <- df %>%
+  mutate(estado_civil = ifelse(estado_civil == 0, "SOLTERO", estado_civil))
+
+#4
+#En 'tiene_algun_tipo_de_discapacidad' cambiamos '0' por 'NO'
+
+df <- df %>%
+  mutate(tiene_algun_tipo_de_discapacidad = ifelse(tiene_algun_tipo_de_discapacidad == 0, "NO", tiene_algun_tipo_de_discapacidad))
+
+#---------------
+# FIN DE INCONSISTENCIAS
+#---------------
+
+#---------------
+#ELIMINAR VARIABLES INNECESARIAS
+#---------------
+
+dfin <- df %>%
+  select(
+    -documento_identidad,
+    -pais_de_nacimiento,
+    -departamento_de_nacimiento,
+    -ciudad_municipio_de_nacimiento,
+    -fecha_de_nacimiento,
+    -direccion_residencia
+  )
 
 #Exportar base limpia a Excel
 
