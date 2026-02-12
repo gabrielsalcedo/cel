@@ -150,5 +150,5 @@ dfin <- df %>%
 
 #Exportar base limpia a Excel
 
-#write_xlsx(df, "base_limpia.xlsx")
+write_xlsx(df, "base_limpia.xlsx")
 
