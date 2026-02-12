@@ -14,6 +14,8 @@ download.file(url, temp_file, mode = "wb")   # Descargar archivo Excel
 
 df <- read_excel(temp_file)
 
+#Estandarizamos nombres de las variables
+
 df <- df %>% janitor::clean_names()
 
 #Modificamos tipo de variable
@@ -55,7 +57,7 @@ df <- df %>%
                                   0,
                                   categoria_fondo))
 
-#Dejar datos de todas las variables tipo character en mayuscula
+#Dejar datos de todas las variables tipo character en mayuscula, para evitar confusiones
 
 df <- df %>%
   mutate(across(where(is.character), str_to_upper))
