@@ -140,7 +140,6 @@ df <- df %>%
 
 dfin <- df %>%
   select(
-    -documento_identidad,
     -pais_de_nacimiento,
     -departamento_de_nacimiento,
     -ciudad_municipio_de_nacimiento,
@@ -151,4 +150,3 @@ dfin <- df %>%
 #Exportar base limpia a Excel
 
 write_xlsx(df, "base_limpia.xlsx")
-
